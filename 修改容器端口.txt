@@ -1,0 +1,9 @@
+cd /var/lib/docker/3b6ef264a040* #这里是CONTAINER ID
+vi hostconfig.json
+如果之前没有端口映射, 应该有这样的一段:
+"PortBindings":{}
+增加一个映射, 这样写:
+"PortBindings":{"3306/tcp":[{"HostIp":"","HostPort":"3307"}]}
+前一个数字是容器端口, 后一个是宿主机端口.
+而修改现有端口映射更简单, 把端口号改掉就行.
+

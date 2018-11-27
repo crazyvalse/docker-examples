@@ -1,0 +1,18 @@
+reload
+docker exec -it 4bb65c891ce3 /etc/init.d/nginx reload
+
+启动 nginx 并指定映射端口, 挂载volumn
+docker run --name=ng-study-01 -p 5700:8080 -p 5701:8081 -p 5702:8082 -d \
+-v /Users/codingnuts/Documents/WorkSpace/5_WebStorm/Github/js_basic/js_basic/nginx/share/www:/usr/share/nginx/html \
+-v /Users/codingnuts/Documents/WorkSpace/5_WebStorm/Github/js_basic/js_basic/nginx/share/conf.d:/etc/nginx/conf.d  \
+-v /Users/codingnuts/Documents/WorkSpace/5_WebStorm/Github/js_basic/js_basic/nginx/share/logs:/var/log/nginx  \
+nginx
+
+把配置文件拷贝到conf.d文件夹中
+docker cp /Users/codingnuts/Documents/WorkSpace/5_WebStorm/Github/js_basic/js_basic/nginx/notes/default.conf 49527f78c28a2824e7a600db81b32afa243a4f294dad84c698a0d024863c93d5:/etc/nginx/conf.d
+
+重启服务
+docker restart 49527f78c28a2824e7a600db81b32afa243a4f294dad84c698a0d024863c93d5
+
+重新加载配置文件
+docker kill -s HUP 4bb65c891ce3

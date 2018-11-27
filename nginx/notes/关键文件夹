@@ -1,0 +1,3 @@
+日志： /var/log/nginx
+配置： /etc/nginx
+资源： /usr/share/nginx/html

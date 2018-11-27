@@ -1,0 +1,1 @@
+docker run --name=znsj-demo -p 8077:80 -v /home/ubuntu/znsj_demo/www:/usr/share/nginx/html -v /home/ubuntu/znsj_demo/conf.d:/etc/nginx/conf.d -d nginx

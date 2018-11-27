@@ -1,0 +1,5 @@
+access_log  logs/access.log  main;
+说明该server，他的访问日志的文件是 logs/host.access.log；
+使用的格式"main"格式
+
+main格式是什么
