@@ -15,4 +15,12 @@ docker cp /Users/codingnuts/Documents/WorkSpace/5_WebStorm/Github/js_basic/js_ba
 docker restart 49527f78c28a2824e7a600db81b32afa243a4f294dad84c698a0d024863c93d5
 
 重新加载配置文件
-docker kill -s HUP 4bb65c891ce3
+docker kill -s HUP 3f570e456f23
+
+docker run --name=ng-01 -p 5700:8080 -d \
+-v $(pwd)/nginx/share/www:/usr/share/nginx/html \
+-v $(pwd)/nginx/share/conf.d:/etc/nginx/conf.d  \
+-v $(pwd)/nginx/share/logs:/var/log/nginx  \
+nginx
+
+
