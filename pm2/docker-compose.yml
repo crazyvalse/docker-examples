@@ -1,0 +1,27 @@
+version: '3'
+
+services:
+  mongodb:
+    image: founder/mongo:3.4
+    volumes:
+      # ./data/db 数据库文件存放地址，根据需要修改为本地地址
+      - './data/db:/data/db'
+    networks:
+      - app-design-platform
+    restart: always
+
+  web:
+    image: adp:latest
+    ports:
+      - 5710:5710
+    volumes:
+      # 网页的地址
+      - './volume/dist:/dist'
+      # 公共对外发布的静态文件
+      - './volume/public:/public'
+    networks:
+      - app-design-platform
+    restart: always
+
+networks:
+  app-design-platform:

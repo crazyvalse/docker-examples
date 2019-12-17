@@ -1,0 +1,47 @@
+{
+  "port": 5701,
+  "host": "0.0.0.0",
+  "pageSize": 30,
+  "proxy": false,
+  "db": "mongodb://172.19.202.182:27027/adp_new",
+  "unsplashClientId": "",
+  "blackList": {
+    "projects": [],
+    "ips": []
+  },
+  "rateLimit": {
+    "max": 1000,
+    "duration": 1000
+  },
+  "jwt": {
+    "expire": "14 days",
+    "secret": "shared-secret"
+  },
+  "upload": {
+    "types": [
+      ".jpg",
+      ".jpeg",
+      ".png",
+      ".gif",
+      ".json",
+      ".yml",
+      ".yaml"
+    ],
+    "size": 5242880,
+    "dir": "../public/upload",
+    "expire": {
+      "types": [
+        ".json",
+        ".yml",
+        ".yaml"
+      ],
+      "day": -1
+    }
+  },
+  "fe": {
+    "copyright": "",
+    "timeout": 25000,
+    "publicPath": "/dist/"
+  },
+  "STORAGE_NAMESPACE": "adp_"
+}

@@ -1,0 +1,116 @@
+node("${env.NODE_DEFINED}"){
+  timestamps {
+    stage('CheckOut') {
+      checkout(
+        [
+          $class: 'SubversionSCM',
+          additionalCredentials: [],
+          excludedCommitMessages: '',
+          excludedRegions: '',
+          excludedRevprop: '',
+          excludedUsers: '',
+          filterChangelog: false,
+          ignoreDirPropChanges: false,
+          includedRegions: '',
+          locations: [
+            [ cancelProcessOnExternalsFail: true,
+              credentialsId: "${env.CREDENTIAL_ID}",
+              depthOption: 'infinity',
+              ignoreExternalsOption: true,
+              local: './script',
+              remote: "https://svn.fzyun.io/mbdp/cicd/script"
+            ],
+            [ cancelProcessOnExternalsFail: true,
+              credentialsId: "${env.CREDENTIAL_ID}",
+              depthOption: 'infinity',
+              ignoreExternalsOption: true,
+              local: './rancher',
+              remote: 'https://svn.fzyun.io/mbdp/cicd/mbd-web-yuqing/rancher'
+            ],
+            [ cancelProcessOnExternalsFail: true,
+              credentialsId: "${env.CREDENTIAL_ID}",
+              depthOption: 'infinity',
+              ignoreExternalsOption: true,
+              local: './mbd-web-platform',
+              remote: 'https://svn.fzyun.io/mbdp/mbd-web/trunk/mbd-web-platform'
+            ],
+            [ cancelProcessOnExternalsFail: true,
+              credentialsId: "${env.CREDENTIAL_ID}",
+              depthOption: 'infinity',
+              ignoreExternalsOption: true,
+              local: './mbd-web-platform-ui',
+              remote: 'https://svn.fzyun.io/onlineeditor/root/mbd-platform/branches/mbd-yuqing1'
+            ]
+          ],
+          quietOperation: true,
+          workspaceUpdater: [$class: 'CheckoutUpdater']
+        ]
+      )
+    }
+
+    def pass_env_type = env.PAAS_ENV
+    if(env.PAAS_ENV == 'dev1' || env.PAAS_ENV == 'dev2' || env.PAAS_ENV == 'dev3') {
+      pass_env_type = 'dev'
+    } else if (env.PAAS_ENV == 'test1' || env.PAAS_ENV == 'test2' || env.PAAS_ENV == 'test3') {
+      pass_env_type = 'test'
+    }
+
+    withEnv(["DOCKER_TAG=3.1.10.${env.BUILD_NUMBER}", "BUILD_NUMBER=${env.BUILD_NUMBER}", "PAAS_ENV=${pass_env_type}"]){
+      stage("Build"){
+        sh '''
+            #sed -i 's/mirrors.fzyun.io/mirrors.aliyun.com/g' /etc/apt/sources.list
+            apt-get update && apt-get install -y --no-install-recommends maven
+        '''
+        docker.image('node:8').inside('-u root') {
+          sh '''
+            cd mbd-web-platform-ui
+            npm config set registry http://npm.fzyun.io
+            npm config set sass_binary_site https://npm.taobao.org/mirrors/node-sass/
+            npm install
+            npm run build
+            rm ../mbd-web-platform/deploy/web -rf
+            mkdir -p ../mbd-web-platform/deploy/web
+            mv dist/* ../mbd-web-platform/deploy/web
+            cd ../mbd-web-platform/deploy
+            rm mbd-web-platform-ui.tar.gz -rf
+            tar czvf mbd-web-platform-ui.tar.gz web
+          '''
+          archiveArtifacts 'mbd-web-platform/deploy/mbd-web-platform-ui.tar.gz'
+        }
+        dir('./mbd-web-platform'){
+          sh '''
+            mvn clean install -U -P${PAAS_ENV} -Dmaven.test.skip=true -Dbuild_number=${BUILD_NUMBER} -Dregistry_url=${HUB}
+          '''
+        }
+        dir('./mbd-web-platform/deploy'){
+          sh '''
+            echo "buiding mbd-web-platform ..."
+            rm mbd-web-platform -rf
+            cp -r ../target/mbd-web-platform mbd-web-platform
+            mv -f web/* mbd-web-platform/web
+            docker build -t ${HUB}/founder/mbd-web-platform:${DOCKER_TAG} .
+          '''
+        }
+      }
+      stage("Push"){
+        sh '''
+          docker push ${HUB}/founder/mbd-web-platform:${DOCKER_TAG}
+          docker rmi ${HUB}/founder/mbd-web-platform:${DOCKER_TAG}
+        '''
+      }
+      stage("Deploy"){
+        dir('./script'){
+          sh '''
+            export PAAS_ENV="${PAAS_ENV}"
+            export SERVICE_STACK="mbd"
+            export BUILD_NUMBER="${BUILD_NUMBER}"
+            export YML_COMPOSE_DIR="../rancher"
+            export YML_DOCKER_COMPOSE="${YML_COMPOSE_DIR}/docker-compose.yml"
+            export YML_RANCHER_COMPOSE="${YML_COMPOSE_DIR}/rancher-compose.yml"
+            /bin/sh -xe "rancher-compose-${PAAS_ENV}.sh"
+          '''
+        }
+      }
+    }
+  }
+}

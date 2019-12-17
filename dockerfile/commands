@@ -1,0 +1,51 @@
+npm install express-generator -g           //安装全局生成器
+
+express --view=pug myapp                    //创建名为myapp的express应用
+
+cd myapp						    //进入myapp文件夹
+
+npm install 						    //安装依赖包
+
+npm start						    //启动
+
+访问localhost:3000 页面出现Welcome to Express
+————————————————
+
+创建 Dockerfile
+
+FROM        node:latest  						//使用最新版本的node镜像
+RUN          mkdir -p /usr/src/app 					//在容器内创建目录
+WORKDIR /usr/src/app 					      		//设置工作目录
+COPY      . /usr/src/app 							//将本机所有内容拷贝至镜像目录
+RUN          npm install 							//执行npm install命令
+EXPOSE    3000							  	//端口暴露
+CMD         [“npm”,”start”]   						//启动命令
+
+然后使用docker命令完成镜像的打包
+
+docker build -t myapp .								  //打包标签为myapp的镜像
+
+docker run -d -p 3001:3000 --name=myapp-01 myapp  		  //后台运行指定名称和端口号映射
+
+localhost:3000                           						         //访问出现Welcome to Express
+
+docker logs -f --tail 100 myapp
+————————————————
+
+
+在原Dockerfile文件中添加
+
+RUN npm install pm2 -g
+
+修改CMD启动命令
+
+CMD ["pm2-runtime","./bin/www","-i","4", "--watch", "--name", "myapp"]
+
+然后重新	启动容器访问
+
+如果进程崩溃，则pm2自动重启
+
+docker exec -it myapp-01 /bin/bash 　　　//进入该容器的命令终端
+pm2 logs									//查看pm2日志
+pm2 list									//查看pm2进程运行列表
+

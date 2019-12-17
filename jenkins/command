@@ -1,0 +1,8 @@
+docker run --name jenkins-01 -p 5788:8080 -p 50000:50000 -v ~/jenkins:/var/jenkins_home --restart=always jenkins
+
+查看容器日志
+
+docker logs -f jenkins
+
+
+1eb59897cbb14233b64eb3d5ac1f2a06

@@ -1,0 +1,48 @@
+version: '2'
+
+catalog:
+  name: mbd-web
+  version: 3.1.10
+  description: 媒体大数据应用平台
+  categroy: Application
+  uuid: mbd-web-3
+  questions:
+    - variable: "FORCE_SSL"
+      label: "强制 SSL 安全协议："
+      default: false
+      required: true
+      type: "boolean"
+    - variable: "HOST_YUQING"
+      label: "舆情分析平台主机名："
+      default: "yuqing.fzdzyun.com"
+      required: false
+      type: "string"
+    - variable: "VOLUME_DRIVER"
+      label: "存储卷驱动："
+      description: "选择存储卷驱动的类型。"
+      default: "rancher-nfs"
+      required: true
+      type: "enum"
+      options:
+        - rancher-nfs
+        - local
+    - variable: "DEV_MODE"
+      label: "是否开发模式："
+      default: false
+      required: true
+      type: "boolean"
+
+services:
+  yuqing:
+    scale: 1
+    start_on_create: true
+    retain_ip: true
+    health_check:
+      healthy_threshold: 2
+      response_timeout: 2000
+      port: 8080
+      unhealthy_threshold: 3
+      interval: 2000
+      initializing_timeout: 180000
+      reinitializing_timeout: 180000
+      strategy: recreate

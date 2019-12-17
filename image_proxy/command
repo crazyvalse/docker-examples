@@ -1,0 +1,1 @@
+docker run --restart always --name image-service -p 5706:8080 -d willnorris/imageproxy -addr 0.0.0.0:8080
