@@ -27,7 +27,7 @@
     "koa-static-cache": "^5.1.2",
     "koa-validate": "^1.0.7",
     "lodash": "^4.17.15",
-    "mongoose": "4.13.9",
+    "mongoose": "5.8.3",
     "mongoose-sequence": "^5.2.2",
     "nodegit": "^0.26.3",
     "path-to-regexp": "^6.1.0",
