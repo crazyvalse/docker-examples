@@ -1,4 +1,4 @@
-FROM node:13
+FROM node:10
 
 # Bundle APP files
 RUN mkdir -p /project
@@ -9,7 +9,7 @@ COPY . /project
 ENV NPM_CONFIG_LOGLEVEL warn
 RUN npm config set registry https://registry.npm.taobao.org \
 #    https://registry.npm.taobao.org http://npm.fzyun.io \
-    && yarn config set https://registry.npm.taobao.org \
+    && yarn config set registry https://registry.npm.taobao.org \
     && yarn config get registry \
     && npm config get registry \
     && yarn install \
