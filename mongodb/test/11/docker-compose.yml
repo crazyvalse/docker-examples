@@ -1,0 +1,18 @@
+version: '2'
+services:
+  master:
+    image: mongo:3.4
+    volumes:
+      - $PWD/data/mongodbml/master:/data/db
+    command: mongod --dbpath /data/db --master
+    ports:
+      - "20017:27017"
+  slaver:
+    image: mongo:3.4
+    volumes:
+      - $PWD/data/mongodbml/slaver:/data/db
+    command: mongod --dbpath /data/db --slave --source master:27017
+    ports:
+      - "20027:27017"
+    links:
+      - master

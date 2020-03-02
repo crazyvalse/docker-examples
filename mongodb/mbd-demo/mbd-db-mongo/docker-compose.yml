@@ -1,0 +1,77 @@
+version: '2'
+
+services:
+  mongodb01:
+    image: app-design/mongo:3.4
+    restart: always
+    environment:
+      MONGO_CONF_INIT: 'true'
+      MONGO_SERVERS: mongodb01.mbddb:27017,mongodb02.mbddb:27017,mongodb03.mbddb:27017
+      MONGO_DATA_HOME: /data/db
+      MONGO_REPLSET: app-design
+    volumes:
+      - mongo-rs01:/data/db
+    labels:
+      io.rancher.container.pull_image: always
+      io.rancher.container.hostname_override: container_name
+      io.fzyun.service.refcom: founder/mongo
+      io.fzyun.service.username: rengy
+    logging:
+      options:
+        max-size: "50m"
+        max-file: "10"
+  mongodb02:
+    image: app-design/mongo:3.4
+    restart: always
+    environment:
+      MONGO_DATA_HOME: /data/db
+      MONGO_REPLSET: app-design
+    volumes:
+      - mongo-rs02:/data/db
+    labels:
+      io.rancher.container.pull_image: always
+      io.rancher.container.hostname_override: container_name
+      io.fzyun.service.refcom: founder/mongo
+      io.fzyun.service.username: rengy
+    logging:
+      options:
+        max-size: "50m"
+        max-file: "10"
+  mongodb03:
+    image: app-design/mongo:3.4
+    restart: always
+    environment:
+      MONGO_DATA_HOME: /data/db
+      MONGO_REPLSET: app-design
+    volumes:
+      - mongo-rs03:/data/db
+    labels:
+      io.rancher.container.pull_image: always
+      io.rancher.container.hostname_override: container_name
+      io.fzyun.service.refcom: founder/mongo
+      io.fzyun.service.username: rengy
+    logging:
+      options:
+        max-size: "50m"
+        max-file: "10"
+
+  mongoman:
+    image: app-design/mongoman:1.1
+    restart: always
+    environment:
+      AM_PORT: 80
+    labels:
+      traefik.enable: 'true'
+      traefik.port: '80'
+      io.rancher.container.pull_image: always
+    logging:
+      options:
+        max-size: "50m"
+        max-file: "10
+volumes:
+  mongo-rs01:
+    driver: rancher-nfs
+  mongo-rs02:
+    driver: rancher-nfs
+  mongo-rs03:
+    driver: rancher-nfs

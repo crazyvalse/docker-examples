@@ -1,0 +1,23 @@
+version: '2'
+services:
+  rs1:
+    image: mongo:3.4
+    volumes:
+      - $PWD/data/mongodbtest/replset/rs1:/data/db
+    command: mongod --dbpath /data/db --replSet myset
+    ports:
+      - "20017:27017"
+  rs2:
+    image: mongo:3.4
+    volumes:
+      - $PWD/data/mongodbtest/replset/rs2:/data/db
+    command: mongod --dbpath /data/db --replSet myset
+    ports:
+      - "20027:27017"
+  rs3:
+    image: mongo:3.4
+    volumes:
+      - $PWD/data/mongodbtest/replset/rs3:/data/db
+    command: mongod --dbpath /data/db --replSet myset
+    ports:
+      - "20037:27017"

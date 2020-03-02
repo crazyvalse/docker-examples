@@ -7,11 +7,11 @@ COPY . /project
 
 # Install app dependenciesw
 ENV NPM_CONFIG_LOGLEVEL warn
-RUN npm config set registry https://registry.npm.taobao.org \
 #    https://registry.npm.taobao.org http://npm.fzyun.io \
+RUN npm config set registry https://registry.npm.taobao.org \
+    && npm config get registry \
     && yarn config set registry https://registry.npm.taobao.org \
     && yarn config get registry \
-    && npm config get registry \
     && yarn install \
     && yarn global add pm2 \
     && ls

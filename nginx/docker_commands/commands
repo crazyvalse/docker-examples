@@ -25,7 +25,7 @@ nginx
 
 
 docker run --name=ng-02 -p 5701:8080 -d \
--v $(pwd)/nginx/share_b/www:/usr/share/nginx/html \
--v $(pwd)/nginx/share_b/conf.d:/etc/nginx/conf.d  \
--v $(pwd)/nginx/share_b/logs:/var/log/nginx  \
+-v $(pwd)/nginx/share/www:/usr/share/nginx/html \
+-v $(pwd)/nginx/share/conf.d:/etc/nginx/conf.d  \
+-v $(pwd)/nginx/share/logs:/var/log/nginx  \
 nginx
