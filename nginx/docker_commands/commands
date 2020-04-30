@@ -29,3 +29,9 @@ docker run --name=ng-02 -p 5701:8080 -d \
 -v $(pwd)/nginx/share/conf.d:/etc/nginx/conf.d  \
 -v $(pwd)/nginx/share/logs:/var/log/nginx  \
 nginx
+
+docker run --name=ng-cache -p 57020:8080 -d \
+-v $(pwd)/nginx/share_cache/www:/usr/share/nginx/html \
+-v $(pwd)/nginx/share_cache/conf.d:/etc/nginx/conf.d  \
+-v $(pwd)/nginx/share_cache/logs:/var/log/nginx  \
+nginx
