@@ -1,0 +1,62 @@
+version: '2'
+
+services:
+  mongodb01:
+    image: adp/mongo:3.4
+    restart: always
+    environment:
+      MONGO_CONF_INIT: 'true'
+      MONGO_SERVERS: mongodb01.mbddb:27017,mongodb02.mbddb:27017,mongodb03.mbddb:27017
+      MONGO_DATA_HOME: /data/db
+      MONGO_REPLSET: adp
+    volumes:
+      - $PWD/db/mongo-rs01:/data/db
+    labels:
+      io.rancher.container.pull_image: always
+      io.rancher.container.hostname_override: container_name
+      io.fzyun.service.refcom: founder/mongo
+      io.fzyun.service.username: rengy
+    logging:
+      options:
+        max-size: "50m"
+        max-file: "10"
+    ports:
+      - 27017:27017
+  mongodb02:
+    image: adp/mongo:3.4
+    restart: always
+    environment:
+      MONGO_DATA_HOME: /data/db
+      MONGO_REPLSET: adp
+    volumes:
+      - $PWD/db/rs02:/data/db
+    labels:
+      io.rancher.container.pull_image: always
+      io.rancher.container.hostname_override: container_name
+      io.fzyun.service.refcom: founder/mongo
+      io.fzyun.service.username: rengy
+    logging:
+      options:
+        max-size: "50m"
+        max-file: "10"
+    ports:
+      - 27018:27017
+  mongodb03:
+    image: adp/mongo:3.4
+    restart: always
+    environment:
+      MONGO_DATA_HOME: /data/db
+      MONGO_REPLSET: adp
+    volumes:
+      - $PWD/db/rs03:/data/db
+    labels:
+      io.rancher.container.pull_image: always
+      io.rancher.container.hostname_override: container_name
+      io.fzyun.service.refcom: founder/mongo
+      io.fzyun.service.username: rengy
+    logging:
+      options:
+        max-size: "50m"
+        max-file: "10"
+    ports:
+      - 27019:27017
