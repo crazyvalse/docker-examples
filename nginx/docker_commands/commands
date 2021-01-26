@@ -17,20 +17,20 @@ docker restart 49527f78c28a2824e7a600db81b32afa243a4f294dad84c698a0d024863c93d5
 重新加载配置文件
 docker kill -s HUP 3f570e456f23
 
-docker run --name=ng-01 -p 5700:8080 -d \
--v $(pwd)/nginx/share/www:/usr/share/nginx/html \
--v $(pwd)/nginx/share/conf.d:/etc/nginx/conf.d  \
--v $(pwd)/nginx/share/logs:/var/log/nginx  \
+docker run --name=ng-proxy -p 5700:8080 -d --network c-ng-proxy \
+-v $(pwd)/nginx/share-proxy/www:/usr/share/nginx/html \
+-v $(pwd)/nginx/share-proxy/conf.d:/etc/nginx/conf.d  \
+-v $(pwd)/nginx/share-proxy/logs:/var/log/nginx  \
 nginx
 
 
-docker run --name=ng-02 -p 5701:8080 -d \
--v $(pwd)/nginx/share/www:/usr/share/nginx/html \
--v $(pwd)/nginx/share/conf.d:/etc/nginx/conf.d  \
--v $(pwd)/nginx/share/logs:/var/log/nginx  \
+docker run --name=ng-web -p 5701:8080 -d --network c-ng-proxy \
+-v $(pwd)/nginx/share-web/www:/usr/share/nginx/html \
+-v $(pwd)/nginx/share-web/conf.d:/etc/nginx/conf.d  \
+-v $(pwd)/nginx/share-web/logs:/var/log/nginx  \
 nginx
 
-docker run --name=ng-cache -p 57020:8080 -d \
+docker run --name=ng-cache -p 57020:8080 -d --network c-ng-proxy \
 -v $(pwd)/nginx/share_cache/www:/usr/share/nginx/html \
 -v $(pwd)/nginx/share_cache/conf.d:/etc/nginx/conf.d  \
 -v $(pwd)/nginx/share_cache/logs:/var/log/nginx  \
